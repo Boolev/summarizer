@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+        <title>Суммаризация</title>
+
+        <style>
+            .container {
+                margin-top: 8vh;
+                background-color: #78A2B7;
+                color: white;
+                border-radius: 10px;
+                box-shadow: 7px 7px 10px grey;
+            }
+
+            .col {
+                padding-top: 5vh;
+                padding-bottom: 5vh;
+            }
+
+            .col-2 {
+                display: flex;
+                align-items: center;
+                padding-top: 5vh;
+                padding-bottom: 5vh;
+                font-size: 115%;
+            }
+
+            .field_annotation {
+                font-size: 200%;
+            }
+
+            .user-input {
+                margin-bottom: 15px;
+            }
+
+            textarea {
+                height: 65vh;
+                width: 80%;
+                resize: none;
+            }
+
+            #button {
+                background-color: #5A7B8C;
+                color: white;
+                border: 1px #333333 solid;
+                border-radius: 2px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <form method="post" class="summarize_form">
+                <div class="row text-center">
+
+                    <div class="col">
+                        {% csrf_token %}
+                        <p class="field_annotation">Текст</p>
+                        <textarea class="input_text" name="input_text" placeholder="Введите текст или выберите готовый">{{ input_text }}</textarea>
+                    </div>
+
+                    <div class="col-2">
+                        <div>
+                            <div class="user-input">
+                                Выберите метод суммаризации<br>
+                                <select id="selector" class="user_inputs" name="method" style="width: 100%">
+                                    <option value="Luhn">Метод Луна</option>
+                                    <option value="TextRank">TextRank</option>
+                                    <option value="LexRank">LexRank</option>
+                                    <option value="BertSumExt">BertSumExt</option>
+                                    <option value="GPT">GPT</option>
+                                    <option value="mBART">mBART</option>
+                                    <option value="T5">T5</option>
+                                </select>
+                            </div>
+
+                            <div class="user-input" id="ratio_input">
+                                Процент от исходного объема
+                                <input id="num_field" class="user_inputs" name="percentage" value="10" style="width: 100%">
+                            </div>
+
+                            {% for message in messages %}
+                                <div class="user-input" style="color: red;">{{ message }}</div>
+                            {% endfor %}
+
+                            <div class="user-input">
+                                <input class="user_inputs" id="button" type="submit" value="Сжать" style="width: 100%">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <p class="field_annotation">Реферат</p>
+                        <textarea readonly class="summary_area">{{ summary }}</textarea>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    </body>
+    <script>
+        selector = document.getElementById('selector');
+        ratio_input = document.getElementById('ratio_input');
+        num_field = document.getElementById('num_field');
+        submit_button = document.getElementById('button');
+        selected_method = '{{ selected_method }}';
+
+        if (selected_method) {
+            selector.value = selected_method;
+        }
+        else {
+            selector.value = 'Luhn';
+        }
+
+        if (!(selector.value == 'Luhn' || selector.value == 'TextRank')) {
+            ratio_input.style.opacity = '0.3';
+            ratio_input.style.pointerEvents = 'none';
+            num_field.value = '';
+        }
+        else {
+            ratio_input.style.opacity = '1';
+            ratio_input.style.pointerEvents = 'auto';
+            num_field.value = 10;
+        }
+
+        selector.addEventListener('change', function(){
+            if (!(this.value == 'Luhn' || this.value == 'TextRank')) {
+                ratio_input.style.opacity = '0.3';
+                ratio_input.style.pointerEvents = 'none';
+                num_field.value = '';
+            }
+            else {
+                ratio_input.style.opacity = '1';
+                ratio_input.style.pointerEvents = 'auto';
+                num_field.value = 10;
+            }
+        });
+
+        submit_button.addEventListener('click', function() {
+            this.value = 'Подождите ...';
+            this.style.pointerEvents = 'none';
+        });
+    </script>
+</html>

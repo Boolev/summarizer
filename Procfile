@@ -1,0 +1,1 @@
+web: gunicorn summarization.wsgi --log-file -
