@@ -59,7 +59,7 @@
                     <div class="col">
                         {% csrf_token %}
                         <p class="field_annotation">Текст</p>
-                        <textarea class="input_text" name="input_text" placeholder="Введите текст или выберите готовый">{{ input_text }}</textarea>
+                        <textarea class="input_text" name="input_text" placeholder="Введите текст">{{ input_text }}</textarea>
                     </div>
 
                     <div class="col-2">
@@ -79,7 +79,7 @@
 
                             <div class="user-input" id="ratio_input">
                                 Процент от исходного объема
-                                <input id="num_field" class="user_inputs" name="percentage" value="10" style="width: 100%">
+                                <input id="num_field" class="user_inputs" name="percentage" style="width: 100%">
                             </div>
 
                             {% for message in messages %}
