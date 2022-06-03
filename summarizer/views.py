@@ -44,6 +44,5 @@ def index(request):
         context['input_text'] = input_text
         context['summary'] = summary
         context['selected_method'] = method
-        context['percentage'] = percentage
 
     return render(request, 'summarizer/index.html', context)
